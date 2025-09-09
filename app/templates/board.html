@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Week {{ week.week_number }} | Roadmap Tracker{% endblock %}
+
+{% block content %}
+<header class="board-header">
+    <div class="board-title">
+        <a href="{{ url_for('main.index') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <h1>{{ week.title }}</h1>
+        <p>{{ week.goal }}</p>
+    </div>
+    <div class="board-actions">
+        <button id="add-task-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Add Task</button>
+    </div>
+</header>
+
+<section class="board-progress">
+    <p id="progress-text">Loading progress...</p>
+</section>
+
+<main class="kanban-container" id="kanban-board" data-week="{{ week.week_number }}">
+
+    <div class="kanban-column">
+        <div class="column-header">
+            <h2><i class="fas fa-list-check"></i> To Do</h2>
+            <span class="task-count">0</span>
+        </div>
+        <ul class="task-list" id="todo-list">
+            </ul>
+    </div>
+
+    <div class="kanban-column">
+        <div class="column-header">
+            <h2><i class="fas fa-person-running"></i> In Progress</h2>
+            <span class="task-count">0</span>
+        </div>
+        <ul class="task-list" id="in-progress-list">
+            </ul>
+    </div>
+
+    <div class="kanban-column">
+        <div class="column-header">
+            <h2><i class="fas fa-check-double"></i> Done</h2>
+            <span class="task-count">0</span>
+        </div>
+        <ul class="task-list" id="done-list">
+            </ul>
+    </div>
+
+</main>
+{% endblock %}

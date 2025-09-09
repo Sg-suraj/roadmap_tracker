@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Roadmap Tracker{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1><i class="fas fa-chart-line"></i> Dashboard</h1>
+    <p class="dashboard-subtitle">Track your weekly progress and goals</p>
+</div>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+        <div class="stat-content">
+            <h3 id="active-weeks">0</h3>
+            <p>Active Weeks</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+        <div class="stat-content">
+            <h3 id="total-tasks">0</h3>
+            <p>Total Tasks</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-content">
+            <h3 id="completed-tasks">0</h3>
+            <p>Completed</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+        <div class="stat-content">
+            <h3 id="overall-progress">0%</h3>
+            <p>Overall Progress</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-actions">
+    <button class="btn btn-primary" id="add-week-btn"><i class="fas fa-plus-circle"></i> Add New Week</button>
+    </div>
+
+<div class="weeks-grid">
+    {% for week in weeks %}
+    <div class="week-card" data-week-number="{{ week.week_number }}">
+        <div class="week-card-header">
+            <h3>Week {{ week.week_number }} {% if week.title and week.title != 'Week ' + week.week_number|string %} - {{ week.title }} {% endif %}</h3>
+            <button class="btn-icon edit-week-btn"><i class="fas fa-edit"></i></button>
+        </div>
+        {% if week.goal %}<p class="week-goal">{{ week.goal }}</p>{% endif %}
+        <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 0%;"></div>
+        </div>
+        <div class="progress-info">
+            <span class="total-tasks">0 tasks</span> 
+            <span class="progress-percentage">0%</span>
+        </div>
+        <div class="task-stats">
+            <span class="task-stat"><span class="todo-count">0</span> To Do</span>
+            <span class="task-stat"><span class="inprogress-count">0</span> In Progress</span>
+            <span class="task-stat"><span class="done-count">0</span> Done</span>
+        </div>
+        <a href="{{ url_for('main.week_board', week_number=week.week_number) }}" class="btn btn-primary view-board-btn">View Board</a>
+    </div>
+    {% else %}
+    <p>No weeks created yet. Click "Add New Week" to start!</p>
+    {% endfor %}
+</div>
+{% endblock %}
