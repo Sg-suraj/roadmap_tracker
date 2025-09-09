@@ -149,6 +149,49 @@ def update_week(week_number):
     except Exception as e:
         logging.error(f"Error updating week: {e}")
         return jsonify({"error": str(e)}), 500
+    
+
+
+## NEW -- DELETE WEEK ENDPOINT ##
+@api.route('/week/<int:week_number>', methods=['DELETE'])
+def delete_week(week_number):
+    """
+    Deletes a week and all of its associated tasks (cascading delete).
+    """
+    try:
+        # Step 1: Find and delete all tasks for the given week
+        tasks_query = db.collection('tasks').where(filter=FieldFilter('week_number', '==', week_number)).stream()
+        
+        # Use a batch to delete all tasks efficiently in one go
+        batch = db.batch()
+        tasks_deleted_count = 0
+        for task in tasks_query:
+            batch.delete(task.reference)
+            tasks_deleted_count += 1
+        batch.commit()
+
+        # Step 2: Find and delete the week document itself
+        week_query = db.collection('weeks').where(filter=FieldFilter('week_number', '==', week_number)).limit(1).stream()
+        week_list = list(week_query)
+        if not week_list:
+            # If the week was already gone but tasks existed, that's okay.
+            # We've cleaned up the tasks, so we can report success.
+            return jsonify({
+                "status": "success",
+                "message": f"Week {week_number} not found, but {tasks_deleted_count} orphaned tasks were deleted."
+            }), 200
+
+        week_doc_id = week_list[0].id
+        db.collection('weeks').document(week_doc_id).delete()
+        
+        return jsonify({
+            "status": "success",
+            "message": f"Week {week_number} and {tasks_deleted_count} tasks were deleted."
+        }), 200
+
+    except Exception as e:
+        logging.error(f"Error deleting week: {e}")
+        return jsonify({"error": str(e)}), 500    
 
 
 @api.route('/week/<int:week_number>/progress', methods=['GET'])

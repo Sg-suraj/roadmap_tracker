@@ -47,9 +47,14 @@
     {% for week in weeks %}
     <div class="week-card" data-week-number="{{ week.week_number }}">
         <div class="week-card-header">
-            <h3>Week {{ week.week_number }} {% if week.title and week.title != 'Week ' + week.week_number|string %} - {{ week.title }} {% endif %}</h3>
-            <button class="btn-icon edit-week-btn"><i class="fas fa-edit"></i></button>
-        </div>
+    <h3>Week {{ week.week_number }} {% if week.title and week.title != 'Week ' + week.week_number|string %} - {{ week.title }} {% endif %}</h3>
+    <div class="week-card-actions">
+        <button class="btn-icon edit-week-btn"><i class="fas fa-edit"></i></button>
+        <button class="btn-icon delete-week-btn" data-week-number="{{ week.week_number }}">
+            <i class="fas fa-trash-alt"></i>
+        </button>
+    </div>
+</div>
         {% if week.goal %}<p class="week-goal">{{ week.goal }}</p>{% endif %}
         <div class="progress-bar-container">
             <div class="progress-bar" style="width: 0%;"></div>
